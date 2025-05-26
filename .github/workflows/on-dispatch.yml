@@ -1,0 +1,25 @@
+name: Run Automation Tests
+
+on:
+  repository_dispatch:
+    types: [run-tests]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: generate Allure report
+        run: npm run report:generate
+
+      - name: Run tests
+        run: npm run wdio
