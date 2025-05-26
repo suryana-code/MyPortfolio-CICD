@@ -18,6 +18,3 @@ temp/
 
 # Mac system files
 .DS_Store
-
-debug.js
-debug.yml
