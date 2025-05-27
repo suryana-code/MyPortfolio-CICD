@@ -30,12 +30,21 @@ jobs:
 
       - name: Full clean gh-pages
         run: |
-          git config --global user.email "msuryana45@gmail.com"
-          git config --global user.name "suryana-code"
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
           git clone --branch gh-pages https://github.com/suryana-code/MyPortfolio-CICD.git gh-pages-temp || true
           cd gh-pages-temp
-          git rm -rf .
-          git commit -m "Clean old allure report"
+
+          # Coba hapus semua file jika ada, lanjut meskipun kosong
+          rm -rf * || true
+          rm -rf .[^.]* || true # hapus dotfiles seperti .nojekyll kalau ada
+
+          touch .gitignore
+          echo "# cleaned" > .gitignore
+
+          git add .
+          git commit -m "Clean old allure report" || echo "Nothing to commit"
           git push origin gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
