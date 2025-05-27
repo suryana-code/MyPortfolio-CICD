@@ -7,6 +7,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -22,12 +23,25 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline
 
+      # # Clone gh-pages to get previous history
+      # - name: Checkout gh-pages for history
+      #   run: |
+      #     git clone --branch gh-pages https://github.com/suryana-code/MyPortfolio-CICD.git gh-pages-temp || true
+      #     mkdir -p allure-results/history
+      #     cp -r gh-pages-temp/history allure-results/history || true
+
+      # Clean previous allure-results
+      - name: Clean previous allure results
+        run: rm -rf allure-results
+
       - name: Run tests
         run: npm run wdio
 
       - name: Generate Allure Report
-        run: npm run report:generate
+        run: |
+          allure generate allure-results --clean -o allure-report
 
+      # Deploy the new report
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
