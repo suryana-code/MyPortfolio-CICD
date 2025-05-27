@@ -23,9 +23,11 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline
 
-      # Bersihkan hasil sebelumnya
-      - name: Clean previous allure results
-        run: rm -rf allure-results allure-report
+      # Delete
+      - name: Clean previous allure results and report
+        run: |
+          rm -rf allure-results
+          rm -rf allure-report
 
       - name: Run tests
         run: npm run wdio
@@ -34,6 +36,7 @@ jobs:
         run: |
           allure generate allure-results --clean -o allure-report
 
+      # Deploy
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
