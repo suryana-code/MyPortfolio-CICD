@@ -23,11 +23,22 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline
 
-      # Delete
       - name: Clean previous allure results and report
         run: |
           rm -rf allure-results
           rm -rf allure-report
+
+      - name: Full clean gh-pages
+        run: |
+          git config --global user.email "msuryana45@gmail.com"
+          git config --global user.name "suryana-code"
+          git clone --branch gh-pages https://github.com/suryana-code/MyPortfolio-CICD.git gh-pages-temp || true
+          cd gh-pages-temp
+          git rm -rf .
+          git commit -m "Clean old allure report"
+          git push origin gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Run tests
         run: npm run wdio
@@ -36,7 +47,6 @@ jobs:
         run: |
           allure generate allure-results --clean -o allure-report
 
-      # Deploy
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
