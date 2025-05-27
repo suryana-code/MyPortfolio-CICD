@@ -24,7 +24,7 @@ class PortfolioPage extends Page {
 
   // navbar
   get navProject() {
-    return $("#nav-projects-button");
+    return $('[data-test="nav-projects-button"]');
   }
   get navSkills() {
     return $("#nav-skills-button");

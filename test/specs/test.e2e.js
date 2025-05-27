@@ -1,8 +1,8 @@
 import { expect } from "@wdio/globals";
 import PortfolioPage from "../pageobjects/portfolio.page.js";
 
-describe("Cek halaman portfolio", () => {
-  it("apakah element-element yang sudah diatur tampil", async () => {
+describe("Check the portfolio page", () => {
+  it("Are the elements that have been set up displaying correctly?", async () => {
     await PortfolioPage.open();
 
     const portfolio = await PortfolioPage.actionPortfolio();
