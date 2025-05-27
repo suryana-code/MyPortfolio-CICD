@@ -28,27 +28,6 @@ jobs:
           rm -rf allure-results
           rm -rf allure-report
 
-      - name: Full clean gh-pages
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
-
-          git clone --branch gh-pages https://github.com/suryana-code/MyPortfolio-CICD.git gh-pages-temp || true
-          cd gh-pages-temp
-
-          # Coba hapus semua file jika ada, lanjut meskipun kosong
-          rm -rf * || true
-          rm -rf .[^.]* || true # hapus dotfiles seperti .nojekyll kalau ada
-
-          touch .gitignore
-          echo "# cleaned" > .gitignore
-
-          git add .
-          git commit -m "Clean old allure report" || echo "Nothing to commit"
-          git push origin gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
-
       - name: Run tests
         run: npm run wdio
 
@@ -56,9 +35,13 @@ jobs:
         run: |
           allure generate allure-results --clean -o allure-report
 
+      - name: Clean history so old data doesn't appear
+        run: rm -rf allure-report/history
+
       - name: Deploy Allure report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PERSONAL_TOKEN }}
           publish_dir: ./allure-report
           publish_branch: gh-pages
+          keep_files: false
