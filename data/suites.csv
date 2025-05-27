@@ -1,4 +1,4 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","11622","Are the elements that have been set up displaying correctly?","","Tue May 27 03:34:34 UTC 2025","passed","Tue May 27 03:34:46 UTC 2025","","Check the portfolio page","",""
 "","20592","apakah element-element yang sudah diatur tampil","","Mon May 26 07:17:05 UTC 2025","broken","Mon May 26 07:17:25 UTC 2025","","Cek halaman portfolio","",""
-"","3758","Are the elements that have been set up displaying correctly?","","Tue May 27 04:12:20 UTC 2025","passed","Tue May 27 04:12:24 UTC 2025","","Check the portfolio page","",""
+"","3084","Are the elements that have been set up displaying correctly?","","Tue May 27 04:24:23 UTC 2025","passed","Tue May 27 04:24:26 UTC 2025","","Check the portfolio page","",""
+"","11622","Are the elements that have been set up displaying correctly?","","Tue May 27 03:34:34 UTC 2025","passed","Tue May 27 03:34:46 UTC 2025","","Check the portfolio page","",""
