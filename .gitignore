@@ -22,3 +22,5 @@ temp/
 
 # Mac system files
 .DS_Store
+
+debug.yml

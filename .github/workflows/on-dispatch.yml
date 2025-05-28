@@ -1,13 +1,15 @@
-name: Run Automation Tests
+name: CI/CD - Test & Merge Dev to Main
 
 on:
   repository_dispatch:
     types: [run-tests]
+  workflow_call:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    outputs:
+      tests_passed: ${{ steps.set-pass-output.outputs.tests_passed }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -23,7 +25,7 @@ jobs:
       - name: Install Allure CLI
         run: npm install -g allure-commandline
 
-      - name: Clean previous allure results and report
+      - name: Clean previous Allure results
         run: |
           npm run clearAllure-Result
           npm run clearAllure-Report
@@ -32,13 +34,48 @@ jobs:
         run: npm run wdio
 
       - name: Generate Allure Report
+        run: npm run report:generate
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: ./allure-report
+
+      - name: Set test result output
+        id: set-pass-output
+        run: echo "tests_passed=true" >> $GITHUB_OUTPUT
+
+  merge_and_deploy:
+    needs: test
+    if: needs.test.outputs.tests_passed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout portfolio repo
+        uses: actions/checkout@v3
+        with:
+          repository: yourusername/portfolio
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          ref: main
+
+      - name: Setup Git
         run: |
-          npm run report:generate
+          git config user.name "CI Bot"
+          git config user.email "ci@example.com"
 
-      - name: Clean history so old data doesn't appear
-        run: rm -rf allure-report/history
+      - name: Merge dev into main
+        run: |
+          git fetch origin dev
+          git merge origin/dev --no-ff -m "Auto merge dev to main after passing CI"
+          git push origin main
 
-      - name: Deploy Allure report to GitHub Pages
+      - name: Download Allure Report Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: allure-report
+          path: ./allure-report
+
+      - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PERSONAL_TOKEN }}
