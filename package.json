@@ -10,6 +10,8 @@
   },
   "scripts": {
     "wdio": "HEADLESS=true wdio run ./wdio.conf.js",
+    "clearAllure-Result": "rm -rf allure-results",
+    "clearAllure-Report": "rm -rf allure-report",
     "deploy:report": "gh-pages -d allure-report",
     "report:copy-history": "cp -r allure-report/history allure-results/history || echo 'no history to copy'",
     "report:generate": "allure generate allure-results --clean -o allure-report",

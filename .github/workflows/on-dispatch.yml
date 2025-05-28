@@ -25,15 +25,15 @@ jobs:
 
       - name: Clean previous allure results and report
         run: |
-          rm -rf allure-results
-          rm -rf allure-report
+          npm run clearAllure-Result
+          npm run clearAllure-Report
 
       - name: Run tests
         run: npm run wdio
 
       - name: Generate Allure Report
         run: |
-          allure generate allure-results --clean -o allure-report
+          npm run report:generate
 
       - name: Clean history so old data doesn't appear
         run: rm -rf allure-report/history
