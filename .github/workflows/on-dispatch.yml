@@ -37,7 +37,7 @@ jobs:
         run: npm run report:generate
 
       - name: Upload Allure Report
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v2
         with:
           name: allure-report
           path: ./allure-report
@@ -70,7 +70,7 @@ jobs:
           git push origin main
 
       - name: Download Allure Report Artifact
-        uses: actions/download-artifact@v3.1.2
+        uses: actions/download-artifact@v2
         with:
           name: allure-report
           path: ./allure-report
