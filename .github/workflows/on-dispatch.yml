@@ -5,7 +5,7 @@ on:
     types: [run-tests]
   workflow_call:
 
-  permissions:
+permissions:
   contents: read
   actions: read
 
