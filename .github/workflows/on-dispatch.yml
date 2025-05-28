@@ -5,6 +5,10 @@ on:
     types: [run-tests]
   workflow_call:
 
+  permissions:
+  contents: read
+  actions: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
