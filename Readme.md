@@ -12,26 +12,43 @@
 
 ## ⚙️ Project Structure
 
-- `.github/workflows/`: Contains configuration files for GitHub Actions.
-- `test/`: Contains test scripts using WebdriverIO.
+- `.github/workflows/`: Contains GitHub Actions workflow configuration files.
+- `test/`: Contains test scripts written using WebdriverIO.
 - `allure-results/`: Stores test results for Allure Reports.
-- `wdio.conf.js`: Configuration file for WebdriverIO.
+- `wdio.conf.js`: WebdriverIO configuration file.
 - `package.json`: Defines project dependencies and scripts.
 
 ## 🔄 CI/CD Workflow
 
-The CI/CD pipeline is set up to perform the following:
+The CI/CD pipeline performs the following steps:
 
-1. **Build**: Build the React application.
-2. **Test**: Run automated tests using WebdriverIO.
-3. **Deploy**: Deploy the application to GitHub Pages after successful tests.
+1. **Build**: Builds the React application.
+2. **Test**: Runs automated tests using WebdriverIO.
+3. **Deploy**: If tests pass, deploys the application to GitHub Pages.
+
+## 🔁 Cross-Repository Workflow
+
+The workflow across repositories is as follows:
+
+1. **Portfolio Repository (branch `dev`)**: On every push or pull request to the `dev` branch, a trigger is sent to the `myportfolio-CICD` repository.
+2. **MyPortfolio-CICD Repository**:
+
+   - Runs automation tests in the `dev` environment.
+   - If tests pass, it sends a signal back indicating success and instructs the `dev` branch of the `portfolio` repository to merge with `main`.
+   - This triggers deployment to **Cloudflare (production environment)**.
+
+3. **Allure Report Deployment**: Test reports are published to GitHub Pages.
 
 ## 🌐 Website Access
 
-Your portfolio site can be accessed through GitHub Pages at the following URL:
+You can access the portfolio website via GitHub Pages:
 
 👉 [suryana-code.github.io/MyPortfolio-CICD](https://suryana-code.github.io/MyPortfolio-CICD/)
 
-The Allure report can be accessed at:
+My Portfolio is available at:
+
+👉 [My Portfolio](https://msuryana-portfolio.pages.dev/)
+
+Allure report is available at:
 
 👉 [Allure Report](https://suryana-code.github.io/MyPortfolio-CICD/#suites/90ed9ec3cc79190f4344534f068e4bd7/51d77a4392594df7/)
