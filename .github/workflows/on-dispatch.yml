@@ -67,10 +67,10 @@ jobs:
           git config user.name "CI Bot"
           git config user.email "ci@example.com"
 
-      - name: Merge dev into main (force from dev)
+      - name: Merge dev into main (allow unrelated histories)
         run: |
           git fetch origin dev
-          git merge origin/dev --strategy-option theirs --no-edit || true
+          git merge origin/dev --allow-unrelated-histories --no-edit
           git push origin main
 
       - name: Download Allure Report Artifact
