@@ -58,7 +58,7 @@ jobs:
       - name: Checkout portfolio repo
         uses: actions/checkout@v3
         with:
-          repository: yourusername/portfolio
+          repository: suryana-code/Portofolio
           token: ${{ secrets.PERSONAL_TOKEN }}
           ref: main
 
