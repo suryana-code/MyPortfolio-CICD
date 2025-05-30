@@ -70,7 +70,7 @@ jobs:
       - name: Merge dev into main
         run: |
           git fetch origin dev
-          git merge origin/dev --no-ff -m "Auto merge dev to main after passing CI"
+          git merge origin/dev --allow-unrelated-histories --no-ff -m "Auto merge dev to main after passing CI"
           git push origin main
 
       - name: Download Allure Report Artifact
