@@ -74,35 +74,39 @@ jobs:
         if: always()
         run: echo "tests_passed=${{ steps.run-tests.outcome == 'success' }}" >> $GITHUB_OUTPUT
 
-      - name: Notify Telegram - automation failed
-        if: steps.run-tests.outcome != 'success'
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          MESSAGE="❌ Automation Testing Failed
-
-          Repository: ${{ github.repository }}
-          Branch: ${{ github.event.client_payload.branch || 'dev' }}
-
-          The merge and deployment steps were not started.
-          🔎 GitHub Actions: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-
-          curl --fail-with-body -sS -X POST \
-            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            -d "chat_id=${TELEGRAM_CHAT_ID}" \
-            --data-urlencode "text=${MESSAGE}"
-
       - name: Fail workflow when automation tests fail
         if: steps.run-tests.outcome != 'success'
         run: exit 1
 
-  merge_and_deploy:
+  publish_allure:
     needs: test
-    if: needs.test.outputs.tests_passed == 'true'
+    if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Telegram - tests passed
+      - name: Checkout report repository
+        uses: actions/checkout@v4
+
+      - name: Download Allure Report Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: ./allure-report
+
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PERSONAL_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
+          keep_files: false
+
+  notify_test_result:
+    needs: [test, publish_allure]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Telegram - automation passed
+        if: needs.test.outputs.tests_passed == 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -111,9 +115,8 @@ jobs:
 
           Repository: ${{ github.repository }}
           Branch: ${{ github.event.client_payload.branch || 'dev' }}
+          📊 Allure Report: https://suryana-code.github.io/MyPortfolio-CICD/
 
-          The Allure Report is being published.
-          Next step: merge dev → main.
           🔎 GitHub Actions: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
           curl --fail-with-body -sS -X POST \
@@ -121,6 +124,30 @@ jobs:
             -d "chat_id=${TELEGRAM_CHAT_ID}" \
             --data-urlencode "text=${MESSAGE}"
 
+      - name: Notify Telegram - automation failed
+        if: needs.test.outputs.tests_passed != 'true'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          MESSAGE="❌ Automation Testing Failed
+
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.event.client_payload.branch || 'dev' }}
+          📊 Allure Report: https://suryana-code.github.io/MyPortfolio-CICD/
+
+          🔎 GitHub Actions: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          curl --fail-with-body -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=${MESSAGE}"
+
+  merge_and_deploy:
+    needs: [test, publish_allure]
+    if: needs.test.outputs.tests_passed == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout portfolio repo
         uses: actions/checkout@v3
         with:
@@ -170,38 +197,6 @@ jobs:
           Branch: dev → main
 
           Cloudflare Pages deployment has been triggered."
-
-          curl --fail-with-body -sS -X POST \
-            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            -d "chat_id=${TELEGRAM_CHAT_ID}" \
-            --data-urlencode "text=${MESSAGE}"
-
-      - name: Download Allure Report Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-report
-          path: ./allure-report
-
-      - name: Deploy Allure Report to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.PERSONAL_TOKEN }}
-          publish_dir: ./allure-report
-          publish_branch: gh-pages
-          keep_files: false
-
-      - name: Notify Telegram - Allure Report published
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          MESSAGE="📊 Allure Report Published
-
-          Repository: ${{ github.repository }}
-          Report: https://suryana-code.github.io/MyPortfolio-CICD/
-
-          Portfolio deployment is in progress:
-          https://msuryana-portfolio.pages.dev/"
 
           curl --fail-with-body -sS -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
