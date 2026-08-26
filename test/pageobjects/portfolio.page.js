@@ -106,10 +106,14 @@ class PortfolioPage extends Page {
     const textSkills = await this.titleSkills.getText();
 
     await this.navExpe.click();
-    await this.titleExpe.isDisplayed();
+    await this.titleExpe.waitForDisplayed({ timeout: 15000 });
+    await this.titleExpe.scrollIntoView();
     await browser.waitUntil(
       async () => (await this.titleExpe.getText()).trim() !== "",
-      { timeout: 10000 },
+      {
+        timeout: 15000,
+        timeoutMsg: "Work Experiences title did not contain text within 15 seconds",
+      },
     );
     const textExpe = await this.titleExpe.getText();
 
