@@ -10,7 +10,13 @@ describe("Check the portfolio page", () => {
     expect(portfolio.textProject).toEqual("PROJECTS");
     expect(portfolio.textSkills).toEqual("SKILLS");
     expect(portfolio.textExpe).toEqual("WORK EXPERIENCES");
+
+    expect(portfolio.textTemp).toEqual("QA TEMPLATE DOCUMENTATION");
+    expect(portfolio.textTesti).toEqual("WHAT THEY SAY ABOUT ME?");
+
     expect(portfolio.textCerti).toEqual("CERTIFICATIONS");
+    expect(portfolio.textEdu).toEqual("EDUCATIONS");
+
     expect(portfolio.textBlogs).toEqual("BLOGS");
     expect(portfolio.textGitProject).toEqual("GITHUB PROJECT");
     expect(portfolio.textContact).toEqual("CONTACT");
